@@ -14,6 +14,9 @@ from fbxtools.fbxo import *
 import time
 from datetime import timedelta, datetime
 
+import urllib3
+urllib3.disable_warnings()
+
 class Fbx():
 
     def __init__(self, url, app_infos='app_infos.json', 
@@ -36,6 +39,7 @@ class Fbx():
         self._contacts = {}
         self._groups = {}
         self._fwredirs = {}
+        self._static_leases = {}
 
         self._boxinfos_loaded = False
 
@@ -236,6 +240,57 @@ class Fbx():
 
         return call
 
+    def _build_stlhostinfos(self,stl):
+        host = LanHost()
+        
+        try:
+            host.primary_name = stl.host[u'primary_name']
+        except:
+            host.primary_name = u''
+        try:
+            host.active = stl.host[u'active']
+        except:
+            pass
+        try:
+            host.reachable = stl.host[u'reachable']
+        except:
+            pass
+        try:
+            host.host_type = stl.host[u'host_type']
+        except:
+            pass
+        try:
+            host.persistent = stl.host[u'persistent']
+        except:
+            pass
+        try:
+            host.primary_name_manual = stl.host[u'primary_name_manual']
+        except:
+            pass
+        try:
+            host.last_activity = datetime.fromtimestamp(stl.host[u'last_activity'])
+        except:
+            pass
+        try:
+            host.last_time_reachable = datetime.fromtimestamp(stl.host[u'last_time_reachable'])
+        except:
+            pass
+        try:
+            host.vendor_name = stl.host[u'vendor_name']
+        except:
+            pass
+        try:
+            host.interface = stl.host[u'interface']
+        except:
+            pass
+        try:
+            host.id = stl.host[u'id']
+        except:
+            pass
+        #print(host)
+        stl.host = host
+        return stl
+
 
     #def get_permissions(self):
     #    return self._permissions
@@ -304,6 +359,22 @@ class Fbx():
         #print(u'fwredirs, dict:',fwredirs,fwredirs.__dict__)
         return self._fwredirs.fwredirs
 
+    def get_stlease_all(self):
+            return self.get_stleases()
+
+    def get_stleases(self,start=0,limit=-1,page=1):
+        #if not self.permissions.contacts :
+        #        self._static_leases = []
+        #        return self._static_leases
+        stleases = Static_Leases(fbx=self)
+        params = {'start':start,'limit':limit,'page':page}
+        self._static_leases = stleases.get_by_id(params=params)
+        #print(u'stleases, dict:',stleases,stleases.__dict__)
+        #print(u'stleases, dict end.')
+        for stl in self._static_leases.static_leases:
+            self._build_stlhostinfos(stl)
+        return self._static_leases.static_leases
+
 
 
     #
@@ -343,6 +414,11 @@ class Fbx():
     def get_call(self,call_id):
         return self._get_fbobj(Call,id=call_id,\
                                 permission=self.permissions.calls)
+
+    def get_staticlease(self,sl_id):
+        return self._get_fbobj(Static_Lease,id=sl_id,\
+                                permission=self.permissions.calls)
+        
     def get_fwredir(self,fwredir_id):
         return self._get_fbobj(FwRedir,id=fwredir_id)
     #
@@ -386,6 +462,9 @@ class Fbx():
     def set_fwredir(self,fwredir_id,fwredirinfos):
         return self._set_fbobj(FwRedir,fwredir_id,fwredirinfos)
 
+    def set_static_lease(self,stlinfos):
+        return self._set_fbobj(Static_Lease,stlinfos)
+
     #
     # new fbx object
     #
@@ -416,6 +495,9 @@ class Fbx():
 
     def new_fwredir(self,fwredirinfos):
         return self._new_fbobj(FwRedir,fwredirinfos)
+
+    def new_static_lease(self,stlinfos):
+        return self._new_fbobj(Static_Lease,stlinfos)
 
     #
     # delete fbx object
@@ -456,6 +538,9 @@ class Fbx():
     def delete_fwredir(self,fwredir_id):
         return self._delete_fbobj(FwRedir,fwredir_id)
 
+    def delete_static_lease(self,stlinfos):
+        return self._delete_fbobj(Static_Lease,stlinfos)
+
 
     permissions = property(get_permissions, None, None, "freebox app permissions Permissions")
     calls       = property(get_calls, None, None, "freebox calls list")
@@ -464,6 +549,7 @@ class Fbx():
     boxinfos    = property(get_boxinfos, None, None, "freebox infos Boxinfos")
     interfaces  = property(get_interfaces, None, None, "freebox interfaces list")
     fwredirs    = property(get_fwredirs, None, None, "freebox fwredir list")
+    staticleases    = property(get_stleases, None, None, "freebox static_lease list")
 
     def __str__(self):
         fbstr = u"uptime: %s, disk_status: %s\r\nfirmware_version: %s, box_authenticated: %s\r\n"\
