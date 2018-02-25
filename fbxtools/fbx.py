@@ -35,7 +35,7 @@ class Fbx():
         self._calls = {}
         self._contacts = {}
         self._groups = {}
-                self._fwredirs = {}
+        self._fwredirs = {}
 
         self._boxinfos_loaded = False
 
@@ -237,8 +237,8 @@ class Fbx():
         return call
 
 
-    def get_permissions(self):
-        return self._permissions
+    #def get_permissions(self):
+    #    return self._permissions
 
     #
     # get fbx list object
