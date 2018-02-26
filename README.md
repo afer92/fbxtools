@@ -1,6 +1,6 @@
 # Fbxtools
 
-Provide intialisation, connect and disconnect functions for Freebox OS application.
+Provide initialisation, connect and disconnect functions for Freebox OS application.
 
 ## Installation
 

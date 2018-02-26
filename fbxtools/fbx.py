@@ -22,6 +22,7 @@ class Fbx():
     def __init__(self, url, app_infos='app_infos.json', 
         app_auth='app_auth.json', verify_cert=False, mute=False):
 
+        self.version = u'1.2'
         self.url = url
         self.api = Apize(self.url)
         self.api.verify_cert = verify_cert
@@ -30,7 +31,8 @@ class Fbx():
         self.mute = mute
 
         self._permissions = Permissions()
-        for field_name in ["pvr","explorer","calls","contacts","tv","parental","settings","downloader"]:
+        for field_name in ["pvr","explorer","calls","contacts",
+                           "tv","parental","settings","downloader"]:
             setattr(self._permissions,field_name,False)
 
         self._boxinfos = Boxinfos()

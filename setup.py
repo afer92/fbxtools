@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name = 'fbxtools',
-	version = '1.1',
+	version = '1.2',
 	author = 'herrersystem',
 	author_email = 'contact@evhunter.fr',
 	
