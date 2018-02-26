@@ -10,7 +10,7 @@ setup(name = 'fbxtools',
 	description = 'Provide intialisation, connect and disconnect functions for Freebox OS application.',
 	license = 'GNU General Public License (GPL)',
 	packages = ['fbxtools'],
-	install_requires = ['apize', 'netifaces'],
+	install_requires = ['apize', 'netifaces', 'cookiejar', 'http'],
 	
 	classifiers = [
 		'Development Status :: 4 - Beta',
