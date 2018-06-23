@@ -709,8 +709,8 @@ class FwRedir(FreeboxObj):
         'host'    :   {'list': False,'type_info': "LanHost"},\
         'hostname':   {'list': False,'type_info': str},\
         'lan_port':   {'list': False,'type_info': int},\
-        'wan_port':   {'list': False,'type_info': int},\
-        'wan_port_start': {'list': False,'type_info': id},\
+        'wan_port_start': {'list': False,'type_info': int},\
+        'wan_port_end':   {'list': False,'type_info': int},\
         'lan_ip':     {'list': False,'type_info': str},\
         'ip_proto':   {'list': False,'type_info': str},\
         'src_ip':     {'list': False,'type_info': str}\
