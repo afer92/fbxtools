@@ -42,6 +42,7 @@ class Fbx():
         self._groups = {}
         self._fwredirs = {}
         self._static_leases = {}
+        self._dynamic_leases = {}
 
         self._boxinfos_loaded = False
 
@@ -364,6 +365,9 @@ class Fbx():
     def get_stlease_all(self):
             return self.get_stleases()
 
+    def get_dylease_all(self):
+            return self.get_dyleases()
+
     def get_stleases(self,start=0,limit=-1,page=1):
         #if not self.permissions.contacts :
         #        self._static_leases = []
@@ -376,6 +380,20 @@ class Fbx():
         for stl in self._static_leases.static_leases:
             self._build_stlhostinfos(stl)
         return self._static_leases.static_leases
+
+
+    def get_dyleases(self,start=0,limit=-1,page=1):
+        #if not self.permissions.contacts :
+        #        self._static_leases = []
+        #        return self._static_leases
+        dyleases = Dynamic_Leases(fbx=self)
+        params = {'start':start,'limit':limit,'page':page}
+        self._dynamic_leases = dyleases.get_by_id(params=params)
+        #print(u'stleases, dict:',stleases,stleases.__dict__)
+        #print(u'stleases, dict end.')
+        for dyl in self._dynamic_leases.dynamic_leases:
+            self._build_stlhostinfos(dyl)
+        return self._dynamic_leases.dynamic_leases
 
 
 
@@ -419,6 +437,10 @@ class Fbx():
 
     def get_staticlease(self,sl_id):
         return self._get_fbobj(Static_Lease,id=sl_id,\
+                                permission=self.permissions.calls)
+
+    def get_dynamiclease(self,dl_id):
+        return self._get_fbobj(Dynamimic_Lease,id=dl_id,\
                                 permission=self.permissions.calls)
         
     def get_fwredir(self,fwredir_id):
@@ -552,6 +574,7 @@ class Fbx():
     interfaces  = property(get_interfaces, None, None, "freebox interfaces list")
     fwredirs    = property(get_fwredirs, None, None, "freebox fwredir list")
     staticleases    = property(get_stleases, None, None, "freebox static_lease list")
+    dynamicleases   = property(get_dyleases, None, None, "freebox dynamic_lease list")
 
     def __str__(self):
         fbstr = u"uptime: %s, disk_status: %s\r\nfirmware_version: %s, box_authenticated: %s\r\n"\
