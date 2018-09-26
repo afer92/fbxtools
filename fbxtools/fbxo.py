@@ -78,6 +78,10 @@ class FreeboxObj(object):
                                 infos = Static_Lease(wdata=elem)
                             elif self._attribs[field_name]['type_info'] == "Static_Leases":
                                 infos = Static_Leases(data=elem)
+                            elif self._attribs[field_name]['type_info'] == "Dynamic_Lease":
+                                infos = Static_Lease(wdata=elem)
+                            elif self._attribs[field_name]['type_info'] == "Dynamic_Leases":
+                                infos = Dynamic_Lease(wdata=elem)
                                 #print(u'infos:',infos)
                             if infos != None:
                                 obj_list.append(infos)
@@ -129,6 +133,9 @@ class FreeboxObj(object):
                 elif self._attribs[field_name]['type_info'] == "Static_Lease":
                     fbxobj_type = "Static_Leases"
                     break
+                elif self._attribs[field_name]['type_info'] == "Dynamic_Lease":
+                    fbxobj_type = "Dynamic_Leases"
+                    break
             obj_list = []
             for elem in data:
                 if fbxobj_type == "Contacts":
@@ -149,6 +156,8 @@ class FreeboxObj(object):
                     infos = FwRedir()
                 elif fbxobj_type == "Static_Leases":
                     infos = Static_Lease()
+                elif fbxobj_type == "Dynamic_Leases":
+                    infos = Dynamic_Lease()
                 infos.load_data(elem)
                 obj_list.append(infos)
             if fbxobj_type == "Contacts":
@@ -167,6 +176,8 @@ class FreeboxObj(object):
                 setattr(self, 'lanhosts', obj_list)
             elif fbxobj_type == "Static_Leases":
                 setattr(self, 'static_leases', obj_list)
+            elif fbxobj_type == "Dynamic_Leases":
+                setattr(self, 'dynamic_leases', obj_list)
             elif fbxobj_type == "FwRedirs":
                 setattr(self, 'fwredirs', obj_list)
 
@@ -416,6 +427,15 @@ class Static_Leases(FreeboxObj):
     }):
         FreeboxObj.__init__(self, fbx, data, attribs)
 
+class Dynamic_Leases(FreeboxObj):
+
+    _url_get = '/dhcp/dynamic_lease/'
+
+    def __init__(self, fbx=None, data={}, attribs={\
+        'dynamic_leases':   {'list': True,'type_info': "Dynamic_Lease"}\
+    }):
+        FreeboxObj.__init__(self, fbx, data, attribs)
+
 class Static_Lease(FreeboxObj):
 
     _url_get = '/dhcp/static_lease/'
@@ -427,6 +447,22 @@ class Static_Lease(FreeboxObj):
         'id':         {'list': False,'type_info': int},\
         'host'    :   {'list': False,'type_info': "LanHost"},\
         'ip':         {'list': False,'type_info': int}\
+    }):
+        FreeboxObj.__init__(self, fbx, data, attribs)
+
+class Dynamic_Lease(FreeboxObj):
+
+    _url_get = '/dhcp/dynamic_lease/'
+
+    def __init__(self, fbx=None, data={}, attribs={\
+        'mac':          {'list': False,'type_info': str},\
+        'host':         {'list': False,'type_info': "LanHost"},\
+        'refresh_time': {'list': False,'type_info': datetime},\
+        'hostname':     {'list': False,'type_info': str},\
+        'assign_time':  {'list': False,'type_info': datetime},\
+        'lease_remaining': {'list': False,'type_info': int},\
+        'is_static':    {'list': False,'type_info': bool},\
+        'ip':           {'list': False,'type_info': int}\
     }):
         FreeboxObj.__init__(self, fbx, data, attribs)
 
